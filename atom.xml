@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://ticksj.github.io/</id>
     <title>Gridea</title>
-    <updated>2019-11-08T07:52:53.019Z</updated>
+    <updated>2019-11-08T08:04:10.793Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://ticksj.github.io/"/>
     <link rel="self" href="https://ticksj.github.io//atom.xml"/>
@@ -10,4 +10,17 @@
     <logo>https://ticksj.github.io//images/avatar.png</logo>
     <icon>https://ticksj.github.io//favicon.ico</icon>
     <rights>All rights reserved 2019, Gridea</rights>
+    <entry>
+        <title type="html"><![CDATA[5. 动画]]></title>
+        <id>https://ticksj.github.io//post/5-dong-hua</id>
+        <link href="https://ticksj.github.io//post/5-dong-hua">
+        </link>
+        <updated>2019-11-08T08:01:59.000Z</updated>
+        <content type="html"><![CDATA[<ol>
+<li>基础动画</li>
+<li>补充动画</li>
+<li>属性动画</li>
+</ol>
+]]></content>
+    </entry>
 </feed>
