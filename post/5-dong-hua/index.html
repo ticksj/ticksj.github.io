@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8" >
 
-<title>5. 动画 | Gridea</title>
+<title>1-1-1.Activity的启动与管理之图记表查 | Gridea</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://ticksj.github.io//favicon.ico?v=1573200228875">
+<link rel="shortcut icon" href="https://ticksj.github.io//favicon.ico?v=1585619143994">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://ticksj.github.io//styles/main.css">
 
@@ -30,7 +30,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://ticksj.github.io/">
-        <img src="https://ticksj.github.io//images/avatar.png?v=1573200228875" class="site-logo">
+        <img src="https://ticksj.github.io//images/avatar.png?v=1585619143994" class="site-logo">
         <h1 class="site-title">Gridea</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -92,15 +92,150 @@
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
           <div class="post-detail">
-            <h2 class="post-title">5. 动画</h2>
+            <h2 class="post-title">1-1-1.Activity的启动与管理之图记表查</h2>
             <div class="post-date">2019-11-08</div>
             
             <div class="post-content">
-              <ol>
-<li>基础动画</li>
-<li>补充动画</li>
-<li>属性动画</li>
+              <p>Activity 作为AndroidApp重要的组成之一，它的创建、运行和维护也是我们必须知悉的一部分；Activity的创建是由开发人员决定，它的运行与维护则由系统通过任务栈进行协助管理，我们通过配置指定的启动模式来实现我们App的良好使用<img src="https://ticksj.github.io//post-images/1585619097584.jpg" alt="Activity启动与管理.jpg"></p>
+<h2 id="activity的管理任务栈">Activity的管理——任务栈</h2>
+<h3 id="任务栈">任务栈</h3>
+<p>Android Task 是用来存放Activity实例的容器，Android系统可以通过Task可以有序的对每个Activity进行管理，决定与用户交互的Activity(也就是栈顶的Activity)</p>
+<ul>
+<li>Android Task是一个栈结构，只有压栈、出栈的操作，具有先进后出的特点</li>
+<li>启动一个Application的时候，系统会为它默认创建一个对应的Task，用来放置根Activity，这里需要注意一个App可以不止拥有一个任务栈，一个任务栈可以存放来不同应用的Activity</li>
+<li>任务栈所有的Activity被移除时才会被销毁，任务栈也可以移至后台并保留栈内所有的Activity及状态信息</li>
+<li>前台栈与后台栈，正在与用户交互的Activity存在的任务栈即为前台栈，其他则为后台栈，假设每个App只有一个任务栈，当我们切换使用APP时可以看到多个任务栈在后台，正在使用的APP的栈则是前台栈，当发生跳转其他应用时，后台栈被移动至前台成为前台栈，此时的返回操作则由前台栈接手，注意依然是两个栈<br>
+<img src="https://upload-images.jianshu.io/upload_images/3026588-ef6910f5af067c84.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="前台栈切换.png"></li>
+</ul>
+<h2 id="activity的启动模式">Activity的启动模式</h2>
+<p>正常情况下，当一个Activity启动了另一个Activity的时候，新启动的Activity就会置于任务栈的顶端，并处于活动状态，启动它的Activity压入，处于停止状态，当用户按下返回键或者调用finish()方法时，系统会移除顶部Activity，让后面的Activity恢复活动状态，而不正常情况下就是给Activity设置特殊的启动模式使得我们的Activity跳转有了自定义的管理</p>
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th>说明</th>
+<th>补充</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Standard/标准模式</td>
+<td>可存在多个实例，跳转到该Activity时会重新实例化并路由Intent给它</td>
+<td>默认进入启动它的任务栈中(<strong>在5.0之前新启动的Activity实例会放入发送Intent的Task的栈的顶部,5.0之后，上述情景会创建一个新的Task，新启动的Activity就会放入刚创建的Task中</strong>)</td>
+</tr>
+<tr>
+<td>SingleTop/栈顶唯一</td>
+<td>可存在多个，只当跳转时该Activity存在栈顶时进行复用，其他情况下会进行重新实例化</td>
+<td>比如在某些情况下跳转某个Activity的操作发生了多次，使用这中模式就可以避免创建多个该Activity;默认任务栈同standard模式</td>
+</tr>
+<tr>
+<td>SingleTask/栈内唯一</td>
+<td>不存在多个，该Activity在一个栈内存在时不会被重新创建</td>
+<td>例如App的登录界面，在退出到登录界面时，使用该模式可以不用对其他登录后的Activity做出栈操作而是自动清空原来之上的所有Activity</td>
+</tr>
+<tr>
+<td>SingleInstance/栈内唯一</td>
+<td>不存在多个，该Activity存在单独的栈内，且不存在其他Activity，不存在时进行实例化并存放至单独的栈内</td>
+<td>新建栈来存放，例如拨号界面</td>
+</tr>
+</tbody>
+</table>
+<h2 id="activity的配置启动">Activity的配置启动</h2>
+<p>Activity的启动模式可以通过清单文件和使用Intent设置Activity Flags来配置。</p>
+<ol>
+<li>AndroidManifest配置 <code>android:launchMode=&quot;standard/singleTop/singleTask/singleInstance&quot;</code></li>
+<li>设置 Activity Flags 配置</li>
 </ol>
+<ul>
+<li>写法</li>
+</ul>
+<pre><code class="language-android">Intent intent = new Intent(SActivity.this, STestActivity.class); 
+intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+startActivity(intent);
+</code></pre>
+<ul>
+<li>Activity Flags</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>属性名</th>
+<th>说明</th>
+<th>补充</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>FLAG_ACTIVITY_CLEAR_TASK</strong></td>
+<td>清空当前task中的Activity功能，必须要和Intent.FLAG_ACTIVITY_NEW_TASK一起用</td>
+<td>受到安卓版本号的限制，在Api 11以上才可以起作用</td>
+</tr>
+<tr>
+<td><strong>FLAG_ACTIVITY_NEW_TASK</strong></td>
+<td>使用一个新的Task来启动一个Activity，但启动的每个Activity都将在一个新的Task</td>
+<td>该Flag通常使用在从Service中启动Activity的场景，由于Service中并不存在Activity栈，所以使用该Flag来创建一个新的Activity栈，并创建新的Activity实例</td>
+</tr>
+<tr>
+<td><strong>FLAG_ACTIVITY_SINGLE_TOP</strong></td>
+<td>使用singletop模式启动一个Activity</td>
+<td>与指定<code>android：launchMode=&quot;singleTop&quot;</code>效果相同。</td>
+</tr>
+<tr>
+<td><strong>FLAG_ACTIVITY_CLEAR_TOP</strong></td>
+<td>使用SingleTask模式来启动一个Activity</td>
+<td>，与指定<code>android：launchMode=&quot;singleTask&quot;</code>效果相同。</td>
+</tr>
+<tr>
+<td><strong>FLAG_ACTIVITY_NO_HISTORY</strong></td>
+<td>Activity使用这种模式启动Activity，当该Activity启动其他Activity后，该Activity就消失了，不会保留在Activity栈中。</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS</strong></td>
+<td>具有这个标记的Activity将不会出现在历史Activity列表中</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="带返回的启动activity方法startactivityforresult">带返回的启动Activity方法——StartActivityForResult</h2>
+<p>开发当中Activity与Activity的数据交互是通过Intent来进行，但普通的startActivity是没办法拿到将要启动的页面的交互后的数据，例如进入拍照页面后获取拍到的相片，因此Android这里设计了StartActivityForResult这一方法满足这一需求</p>
+<ul>
+<li>使用界面跳转</li>
+</ul>
+<pre><code class="language-java">//REQUEST_CODE 为大于0小于65535(0xFFFF)的整数，
+Intent intent = new Intent(this, XXXActivity.class);
+ startActivityForResult(intent,REQUEST_CODE);
+</code></pre>
+<ul>
+<li>使用界面的接收</li>
+</ul>
+<pre><code class="language-java">@Override 
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//requestCode 用于判断是否启动哪个Activity的返回结果
+//resultCode  与Activity.RESULT_CANCELED、Activity.RESULT_OK判断是否取成功
+//data     传递数据的载体
+}
+</code></pre>
+<ul>
+<li>跳转界面的返回</li>
+</ul>
+<pre><code class="language-java">Intent data = new Intent(); 
+setResult(Activity.RESULT_OK, data);
+finish();
+</code></pre>
+<h2 id="补充说明">补充说明</h2>
+<ul>
+<li>开发艺术与探索中提到使用非Activity类型的context(ApplicationContext)启动标准模式的Activity会报错，这是因为此时无法确认新建的Activity所存放的栈，可以为此Activity指定FLAG_NEW_ACTIVITY_TASK标记位来避免报错</li>
+<li>REQUEST_CODE的大小限制是源码中校验规则限制，一旦超出范围则会抛出异常</li>
+</ul>
+<pre><code class="language-java">/**
+ * Checks whether the given request code is a valid code by masking it with 0xffff0000. Throws * an {@link IllegalArgumentException} if the code is not valid.
+ */ 
+ static void checkForValidRequestCode(int requestCode) {
+  if ((requestCode &amp; 0xffff0000) != 0) {
+  throw new IllegalArgumentException(&quot;Can only use lower 16 bits for requestCode&quot;);
+  } }
+</code></pre>
 
             </div>
             
